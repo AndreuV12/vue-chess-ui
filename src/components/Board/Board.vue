@@ -59,16 +59,13 @@ export default {
 
 <style scoped>
 .board {
-  border: 16px solid brown;
-  width: 500px;
-  height: 500px;
+  border: 20px solid brown;
+  aspect-ratio: 1;
   display: flex;
   flex-wrap: wrap;
-  box-sizing: border-box;
 }
 
 .cell {
-  box-sizing: border-box;
   width: 12.5%;
   height: 12.5%;
   border: 1px solid black;

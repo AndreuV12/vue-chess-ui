@@ -35,8 +35,9 @@ export default {
 </script>
 
 <style>
-/* .piece-image {
-    filter: hue-rotate(180deg);
-    filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(90deg);
-} */
+.piece-image {
+    width: 100%;
+    /* filter: hue-rotate(180deg);
+    filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(90deg); */
+}
 </style>

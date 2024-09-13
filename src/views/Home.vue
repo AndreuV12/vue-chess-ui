@@ -1,9 +1,7 @@
 <template>
   <div>
-
-    <h1>Home Page</h1>
-    <v-select></v-select>
-    <Board></Board>
+    <h1>Home</h1>
+    <Board style="width: 600px;"></Board>
   </div>
 </template>
 
