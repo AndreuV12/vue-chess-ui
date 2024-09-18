@@ -1,8 +1,10 @@
 <!-- src/App.vue -->
 <template>
   <v-app>
-    <Appbar @toggleSidebar="sidebar = !sidebar" />
-    <Sidebar v-model="sidebar" />
+    <template v-if="showLayout">
+      <Appbar @toggleSidebar="sidebar = !sidebar" />
+      <Sidebar v-model="sidebar" />
+    </template>
     <v-main>
       <v-container fluid>
         <router-view />
@@ -25,6 +27,11 @@ export default {
   data() {
     return {
       sidebar: true
+    }
+  },
+  computed: {
+    showLayout() {
+      return !(this.$route.name === 'Login' || this.$route.name === 'Register');
     }
   },
 };

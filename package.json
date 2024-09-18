@@ -12,6 +12,8 @@
     "@mdi/font": "^7.4.47",
     "axios": "^1.7.7",
     "js-chess-engine": "^1.0.2",
+    "jwt-decode": "^4.0.0",
+    "pinia": "^2.2.2",
     "vite-plugin-vuetify": "^2.0.4",
     "vue": "^3.4.37",
     "vue-router": "^4.4.4",
