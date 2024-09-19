@@ -27,7 +27,7 @@
 <script>
 import api from '../services/Api'
 import { useStore } from '../store/store';
-import { jwtDecode } from 'jwt-decode'
+import { getUser } from '../services/Auth';
 export default {
     data() {
         return {
@@ -54,10 +54,8 @@ export default {
             const isValid = await this.$refs.form?.validate().then(({ valid }) => (valid))
             if (!isValid) return
             try {
-                const { access_token: accessToken } = await api.signup(this.username, this.email, this.password);
-                localStorage.setItem('accessToken', accessToken);
-                const { sub: username, email } = jwtDecode(accessToken);
-                this.store.user = { username, email }
+                await api.signup(this.username, this.email, this.password);
+                this.store.user = getUser()
                 this.$router.push({ name: 'Home' })
             }
             catch (error) {

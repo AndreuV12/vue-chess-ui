@@ -18,6 +18,7 @@
 
 <script>
 import { useStore } from '../store/store';
+import { clearToken } from '../services/Auth';
 export default {
     data() {
         return {
@@ -33,8 +34,8 @@ export default {
             this.$emit('toggleSidebar')
         },
         logout() {
+            clearToken()
             this.store.user = null
-            localStorage.removeItem('accessToken')
             this.$router.push({ name: 'Login' })
         }
     }
