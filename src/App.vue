@@ -6,7 +6,7 @@
       <Sidebar v-model="sidebar" />
     </template>
     <v-main>
-      <v-container fluid>
+      <v-container fluid class="pa-8 px-16">
         <router-view />
       </v-container>
     </v-main>

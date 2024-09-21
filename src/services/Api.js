@@ -12,19 +12,12 @@ class Api {
       return config;
     });
   }
-  async fetchInitialPos() {
-    console.log(`${apiUrl}/position`);
-    const res = await axios.get(`${apiUrl}/position`);
-    return res.data;
-  }
 
   async login(username, password) {
-    const res = await axios.post(`${apiUrl}/users/login`, {
-      username,
-      password,
-    });
-    console.log("Call Set token", res.data.access_token);
-
+    const dataForm = new FormData();
+    dataForm.append("username", username);
+    dataForm.append("password", password);
+    const res = await axios.post(`${apiUrl}/users/login`, dataForm);
     setToken(res.data.access_token);
     return res.data;
   }
@@ -36,6 +29,24 @@ class Api {
       password,
     });
     setToken(res.data.access_token);
+    return res.data;
+  }
+
+  async createOpening({ name, data }) {
+    const res = await axios.post(`${apiUrl}/openings/`, {
+      name,
+      data,
+    });
+    return res.data;
+  }
+
+  async fetchOpenings() {
+    const res = await axios.get(`${apiUrl}/openings`);
+    return res.data;
+  }
+
+  async deleteOpening(id) {
+    const res = await axios.delete(`${apiUrl}/openings/${id}`);
     return res.data;
   }
 }

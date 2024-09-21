@@ -17,13 +17,11 @@ export default {
         },
     },
     computed: {
-        // Computed para manejar el valor local basado en el prop modelValue
         localValue: {
             get() {
                 return this.modelValue;
             },
             set(value) {
-                // Emitimos el evento update:modelValue para reflejar el cambio en el componente padre
                 this.$emit("update:modelValue", value);
             },
         },
