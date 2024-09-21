@@ -45,6 +45,11 @@ class Api {
     return res.data;
   }
 
+  async fetchOpening(id) {
+    const res = await axios.get(`${apiUrl}/openings/${id}`);
+    return res.data;
+  }
+
   async deleteOpening(id) {
     const res = await axios.delete(`${apiUrl}/openings/${id}`);
     return res.data;

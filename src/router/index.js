@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Openings from "../views/Openings.vue";
+import OpeningDetail from "../views/OpeningDetail.vue";
 
 const publicRouteNames = ["Login", "Register"];
 
@@ -27,6 +28,11 @@ const routes = [
     path: "/openings",
     name: "Openings",
     component: Openings,
+  },
+  {
+    path: "/openings/:id",
+    name: "Opening Detail",
+    component: OpeningDetail,
   },
 ];
 

@@ -14,18 +14,18 @@ export default {
         pieceImage() {
             // Map de piezas a imágenes
             const pieceMap = {
-                'r': 'src/assets/pieces/black-rook.svg',
-                'n': 'src/assets/pieces/black-knight.svg',
-                'b': 'src/assets/pieces/black-bishop.svg',
-                'q': 'src/assets/pieces/black-queen.svg',
-                'k': 'src/assets/pieces/black-king.svg',
-                'p': 'src/assets/pieces/black-pawn.svg',
-                'R': 'src/assets/pieces/white-rook.svg',
-                'N': 'src/assets/pieces/white-knight.svg',
-                'B': 'src/assets/pieces/white-bishop.svg',
-                'Q': 'src/assets/pieces/white-queen.svg',
-                'K': 'src/assets/pieces/white-king.svg',
-                'P': 'src/assets/pieces/white-pawn.svg'
+                'r': '/src/assets/pieces/black-rook.svg',
+                'n': '/src/assets/pieces/black-knight.svg',
+                'b': '/src/assets/pieces/black-bishop.svg',
+                'q': '/src/assets/pieces/black-queen.svg',
+                'k': '/src/assets/pieces/black-king.svg',
+                'p': '/src/assets/pieces/black-pawn.svg',
+                'R': '/src/assets/pieces/white-rook.svg',
+                'N': '/src/assets/pieces/white-knight.svg',
+                'B': '/src/assets/pieces/white-bishop.svg',
+                'Q': '/src/assets/pieces/white-queen.svg',
+                'K': '/src/assets/pieces/white-king.svg',
+                'P': '/src/assets/pieces/white-pawn.svg'
             };
 
             return pieceMap[this.piece] || '';
@@ -37,7 +37,5 @@ export default {
 <style>
 .piece-image {
     width: 100%;
-    /* filter: hue-rotate(180deg);
-    filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(90deg); */
 }
 </style>

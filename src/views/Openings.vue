@@ -4,7 +4,7 @@
     <v-row class="mb-0">
         <v-spacer></v-spacer>
         <v-col cols="auto">
-            <v-btn variant="text" color="teal-darken-2" @click="rightBar = true">
+            <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
                 <v-icon>mdi-plus</v-icon>
                 New Opening
             </v-btn>
@@ -18,15 +18,13 @@
         <thead>
             <tr>
                 <th></th>
-                <th>
-                    Name
-                </th>
+                <th>Name</th>
                 <th></th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="opening in openings" class="cursor-pointer">
+            <tr v-for="opening in openings" class="cursor-pointer" @click.stop="loadOpening(opening)">
                 <td style="width: 60px" class="text-center">
                     <v-icon>mdi-book-open-blank-variant</v-icon>
                 </td>
@@ -90,6 +88,10 @@ export default {
                 console.error("Error al borrar opening", e)
             }
             opening.deleting = false
+        },
+
+        loadOpening(opening) {
+            this.$router.push({ name: "Opening Detail", params: { id: opening.id } })
         }
     }
 };

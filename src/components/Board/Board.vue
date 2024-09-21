@@ -1,10 +1,13 @@
 <template>
-  <div class="board">
-    <div v-for="(coor, index) in coorditates" :key="coor" @click.stop="handleClick(coor)"
-      :class="['cell', isBlackCell(index) ? 'black-cell' : 'white-cell']">
-      <Piece :piece="pieces[coor]"></Piece>
+  <div class="borderedBoard d-flex justify-center align-center">
+    <div class="board">
+      <div v-for="(coor, index) in coorditates" :key="coor" @click.stop="handleClick(coor)"
+        :class="['cell', isBlackCell(index) ? 'black-cell' : 'white-cell']">
+        <Piece :piece="pieces[coor]"></Piece>
+      </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -58,11 +61,18 @@ export default {
 </script>
 
 <style scoped>
-.board {
-  border: 20px solid brown;
+.borderedBoard {
   aspect-ratio: 1;
+  background-color: brown;
+  width: max-content;
+}
+
+.board {
+  width: 90%;
+  height: 90%;
   display: flex;
   flex-wrap: wrap;
+
 }
 
 .cell {
@@ -73,6 +83,10 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.cell.white-cell {
+  background-color: white;
 }
 
 .cell.black-cell {

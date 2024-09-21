@@ -14,9 +14,7 @@ export function getValidToken() {
   if (!token) return null;
   try {
     const { exp } = jwtDecode(token);
-    const currentTime = Date.now() / 1000; // Tiempo actual en segundos
-    console.log(exp, currentTime);
-
+    const currentTime = Date.now() / 1000;
     if (exp > currentTime) {
       return token;
     } else {
