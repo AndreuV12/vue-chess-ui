@@ -35,7 +35,7 @@
                 <td class="text-end">
                     <v-btn icon="mdi-pencil" color="blue-darken-2" variant="text"></v-btn>
                     <v-btn icon="mdi-delete" color="red-darken-2" variant="text" :loading="opening.deleting"
-                        @click="deleteOpening(opening)">
+                        @click.stop="deleteOpening(opening)">
                     </v-btn>
                 </td>
             </tr>

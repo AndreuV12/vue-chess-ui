@@ -1,5 +1,8 @@
 <template>
-    <img :src="pieceImage" alt="chess piece" v-if="piece" class="piece-image" />
+    <div style="position: relative; width: 100%; height: 100%;">
+        <div v-if="selected" class="piece-background"></div>
+        <img :src="pieceImage" alt="chess piece" v-if="piece" class="piece-image" />
+    </div>
 </template>
 
 <script>
@@ -8,6 +11,10 @@ export default {
         piece: {
             type: String,
             default: ''
+        },
+        selected: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -36,6 +43,21 @@ export default {
 
 <style>
 .piece-image {
+    position: absolute;
     width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 4;
+}
+
+.piece-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    background-color: rgba(121, 145, 105, 0.55);
 }
 </style>

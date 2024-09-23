@@ -3,7 +3,7 @@
     <div class="board">
       <div v-for="(coor, index) in coorditates" :key="coor" @click.stop="handleClick(coor)"
         :class="['cell', isBlackCell(index) ? 'black-cell' : 'white-cell']">
-        <Piece :piece="pieces[coor]"></Piece>
+        <Piece :piece="pieces[coor]" :selected="coor == selectedCoor"></Piece>
       </div>
     </div>
   </div>
@@ -15,14 +15,18 @@ import Piece from './Piece/Piece.vue';
 import ChessEngine from '../../services/ChessEngine';
 
 export default {
+  name: 'Board',
   components: {
     Piece,
   },
   props: {
-    modelValue: {
+    fen: {
       type: String,
-      default: () => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+      default: () => "8/8/8/8/8/8/8/8 w KQkq - 0 1"
     },
+    selectedCoor: {
+      type: String,
+    }
   },
   data() {
     return {
@@ -40,10 +44,7 @@ export default {
   },
   computed: {
     pieces() {
-      return ChessEngine.getPieces(this.modelValue)
-    },
-    moves() {
-      return ChessEngine.getMoves(this.modelValue)
+      return ChessEngine.getPieces(this.fen)
     },
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
     },
 
     handleClick(coor) {
-      console.log(coor);
+      this.$emit('onClick', coor)
     }
   },
 }
@@ -64,7 +65,8 @@ export default {
 .borderedBoard {
   aspect-ratio: 1;
   background-color: black;
-  width: max-content;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .board {
@@ -78,9 +80,6 @@ export default {
 .cell {
   width: 12.5%;
   height: 12.5%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
 }
 
