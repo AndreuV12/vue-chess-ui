@@ -1,59 +1,15 @@
 <template>
     <h1 class="mb-2">Opening Detail</h1>
     <span class="openingTitle mb-2">{{ opening.name }}</span>
-    <v-row>
+    <v-row class="d-flex flex-nowrap">
+        <v-col class="d-flex justify-center" style="min-width: 60%">
+            <Board style="width: auto; max-height: 80vh;"></Board>
+        </v-col>
         <v-col>
-            <Board style="width: auto; max-width: 500px;"></Board>
+            <MovesTable></MovesTable>
         </v-col>
-        <v-col cols="auto">
-            <v-table style="width: 300px">
-                <thead>
-                    <tr>
-                        <th>Move</th>
-                        <th> Next Moves</th>
-                        <th> Stockfish</th>
-                    </tr>
-
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            D4
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-                            1.43
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            D4
-                        </td>
-                        <td>
-                            D5, D6
-                        </td>
-                        <td>
-                            1.43
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            D4
-                        </td>
-                        <td>
-
-                        </td>
-                        <td>
-                            1.43
-                        </td>
-                    </tr>
-                </tbody>
-            </v-table>
-        </v-col>
-
-
+        <!-- <v-col>
+        </v-col> -->
     </v-row>
 
 
@@ -61,11 +17,13 @@
 
 <script>
 import Board from '../components/Board/Board.vue';
+import MovesTable from '../components/OpeningDetail/MovesTable.vue';
 
 import api from '../services/Api';
 export default {
     components: {
         Board,
+        MovesTable,
     },
     name: 'Openings',
 

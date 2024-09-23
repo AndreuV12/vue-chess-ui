@@ -63,13 +63,13 @@ export default {
 <style scoped>
 .borderedBoard {
   aspect-ratio: 1;
-  background-color: brown;
+  background-color: black;
   width: max-content;
 }
 
 .board {
-  width: 90%;
-  height: 90%;
+  width: 96%;
+  height: 96%;
   display: flex;
   flex-wrap: wrap;
 
@@ -78,7 +78,6 @@ export default {
 .cell {
   width: 12.5%;
   height: 12.5%;
-  border: 1px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
