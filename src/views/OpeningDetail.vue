@@ -6,11 +6,24 @@
             <InteractiveBoard :fen="fen" @move="handleMove"></InteractiveBoard>
         </v-col>
         <v-col cols="4">
-            <MovesTable></MovesTable>
+            <MovesTable :moves="moves" @clickMove="doMoveFromTable"></MovesTable>
+            <v-row>
+                <v-col>
+                    <v-btn class="mt-4" @click.stop="path.pop()">
+                        Prev
+                    </v-btn>
+                </v-col>
+                <v-col class="text-end">
+                    <v-btn class="mt-4" @click.stop="path.pop()">
+                        Next
+                    </v-btn>
+                </v-col>
+            </v-row>
         </v-col>
         <!-- <v-col>
         </v-col> -->
     </v-row>
+
 </template>
 
 <script>
@@ -56,35 +69,40 @@ export default {
         moves() {
             if (!this.opening?.data) return null
             let data = JSON.parse(JSON.stringify(this.opening.data))
-            for (move of this.path) {
+            for (const move of this.path) {
                 data = data.moves[move]
             }
             return data.moves
         }
     },
     methods: {
-        handleMove(move) {
+        async handleMove(move) {
             const moveName = JSON.stringify(move)
-            const fen = ChessEngine.doMove(this.fen, move[0], move[1])
-            this.addMoveToOpening(moveName, this.opening, this.path, fen)
+            if (!Object.keys(this.moves).includes(moveName)) {
+                const fen = ChessEngine.doMove(this.fen, move[0], move[1])
+                this.addMoveToOpening(moveName, this.opening, this.path, fen)
+            }
             this.path.push(moveName)
-            console.log("Updated", this.path, this.opening);
-
         },
 
-        addMoveToOpening(moveName, opening, path, fen) {
-            const openingCopy = JSON.parse(JSON.stringify(opening))
-            let data = openingCopy.data
-            console.log("add move", data, path);
+        doMoveFromTable(moveName) {
+            this.path.push(moveName)
+        },
 
-            for (const move of path) {
-                data = data.moves[move]
-            }
-            data.moves[moveName] = {
+        async addMoveToOpening(moveName, opening, path, fen) { // Updates opening syncronously (computing locally) so it is not necessary to await for response
+            const newMove = {
                 fen,
                 moves: {}
             }
+            const openingCopy = JSON.parse(JSON.stringify(opening))
+            let data = openingCopy.data
+            for (const move of path) {
+                data = data.moves[move]
+            }
+            data.moves[moveName] = newMove
             this.opening = openingCopy
+            const updatedOpening = await api.addMoveToOpening(opening.id, moveName, newMove, path)
+            this.opening = updatedOpening
         }
     }
 };

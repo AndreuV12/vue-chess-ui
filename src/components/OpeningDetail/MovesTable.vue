@@ -1,35 +1,15 @@
 <template>
-    <v-table class=" moves-table">
+    <v-table class="moves-table">
         <thead class="table-header">
             <tr>
                 <th>Move</th>
                 <th>Score</th>
             </tr>
-
         </thead>
         <tbody class="table-body">
-            <tr>
+            <tr v-for="(moveData, moveName) in moves" :key="moveName" @click.stop="handleMoveClicked(moveName)">
+                <td> {{ moveName }} </td>
                 <td>
-                    D4
-                </td>
-                <td>
-                    1.43
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    D4
-                </td>
-                <td>
-                    1.43
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    D4
-                </td>
-                <td>
-                    1.43
                 </td>
             </tr>
         </tbody>
@@ -40,7 +20,10 @@
 export default {
     name: 'MovesTable',
     props: {
-        modelValue: {},
+        moves: {
+            type: Object,
+            default: () => { }
+        },
     },
     data: () => ({
 
@@ -52,6 +35,9 @@ export default {
     watch: {
     },
     methods: {
+        handleMoveClicked(moveName) {
+            this.$emit('click-move', moveName)
+        }
     },
 }
 </script>

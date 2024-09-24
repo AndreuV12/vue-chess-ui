@@ -74,7 +74,6 @@ export default {
   height: 96%;
   display: flex;
   flex-wrap: wrap;
-
 }
 
 .cell {

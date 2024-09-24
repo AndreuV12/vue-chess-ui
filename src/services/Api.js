@@ -54,6 +54,15 @@ class Api {
     const res = await axios.delete(`${apiUrl}/openings/${id}`);
     return res.data;
   }
+
+  async addMoveToOpening(id, move_name, move, path) {
+    const res = await axios.patch(`${apiUrl}/openings/${id}/add_move`, {
+      move_name,
+      move,
+      path,
+    });
+    return res.data;
+  }
 }
 
 const api = new Api();
