@@ -1,7 +1,7 @@
 <template>
-    <h1>Openings</h1>
+    <h1 class="mb-8">Openings</h1>
 
-    <v-row class="mb-0">
+    <!-- <v-row class="mb-0">
         <v-spacer></v-spacer>
         <v-col cols="auto">
             <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
@@ -9,12 +9,28 @@
                 New Opening
             </v-btn>
         </v-col>
-    </v-row>
-    <v-text-field class="mb-2" variant="outlined" density="compact" label="Search Opening"
-        prepend-inner-icon="mdi-magnify" hide-details>
-    </v-text-field>
+    </v-row> -->
 
-    <v-table>
+    <v-row class="mb-0" style="font-size: 0.875rem; opacity: 0.8">
+        <v-col cols="auto" class="d-flex align-center">
+            <v-text-field variant="outlined" density="compact" label="Search by Name" prepend-inner-icon="mdi-magnify"
+                min-width="320px" hide-details>
+            </v-text-field>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols="auto" class="d-flex align-center">
+            <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
+                <span style="font-weight: bold;">New Opening</span>
+            </v-btn>
+        </v-col>
+        <v-col cols="auto" class="d-flex align-center">
+            <span style="width: 100px;">{{ `${firstOfPage}-${lastOfPage} of ${total}` }}</span>
+        </v-col>
+        <v-col cols="auto">
+            <v-pagination v-model="pagination.page" :length="pagetotal" size="small" total-visible="3"></v-pagination>
+        </v-col>
+    </v-row>
+    <v-table class="mb-4" height="400px">
         <thead>
             <tr>
                 <th></th>
@@ -33,7 +49,7 @@
                 </td>
                 <td></td>
                 <td class="text-end">
-                    <v-btn icon="mdi-pencil" color="blue-darken-2" variant="text"></v-btn>
+                    <v-btn icon="mdi-pencil" color="blue-darken-2" variant="text" @click.stop=""></v-btn>
                     <v-btn icon="mdi-delete" color="red-darken-2" variant="text" :loading="opening.deleting"
                         @click.stop="deleteOpening(opening)">
                     </v-btn>
@@ -41,6 +57,7 @@
             </tr>
         </tbody>
     </v-table>
+
     <v-navigation-drawer location="right" temporary v-model="rightBar" width="400">
         <v-container>
             <h3>New Opening</h3>
@@ -50,6 +67,7 @@
             </v-form>
         </v-container>
     </v-navigation-drawer>
+
 </template>
 
 <script>
@@ -62,17 +80,50 @@ export default {
         return {
             rightBar: false,
             openings: [],
-            newOpening: {}
+            total: 0, // Openings total
+            pagination: {
+                page: 1,
+                limit: 5
+            },
+            newOpening: {},
         }
     },
     async mounted() {
-        this.openings = await api.fetchOpenings()
+        await this.fetchOpenings()
+    },
+
+    computed: {
+        pagetotal() {
+            return Math.ceil(this.total / this.pagination.limit)
+        },
+        firstOfPage() {
+            return (this.pagination.page - 1) * this.pagination.limit + 1
+        },
+        lastOfPage() {
+            return Math.min(this.firstOfPage + this.pagination.limit - 1, this.total)
+        }
+    },
+
+    watch: {
+        'pagination.page'() {
+            this.fetchOpenings()
+        },
     },
     methods: {
+        async fetchOpenings() {
+            const params = {
+                ...this.pagination
+            }
+            console.log("fetch", params);
+            const { openings, total } = await api.fetchOpenings(params)
+            this.openings = openings
+            this.total = total
+        },
         async createOpening(opening) {
             try {
                 const createdOpening = await api.createOpening(opening)
                 this.openings.push(createdOpening)
+                this.total++
             } catch (e) {
                 console.error("Error al borrar opening", e)
             }

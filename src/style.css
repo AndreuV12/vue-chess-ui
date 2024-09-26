@@ -1,6 +1,5 @@
 * {
   box-sizing: border-box;
-  font-size: 14;
   font-family: monospace;
 }
 
@@ -13,10 +12,18 @@
   font-weight: bold;
 }
 
+.v-btn {
+  text-transform: none;
+}
+
 h1 {
   font-size: 24px;
 }
 
 h2 {
   font-size: 20px;
+}
+
+.rb {
+  border: 2px solid red
 }

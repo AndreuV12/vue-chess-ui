@@ -40,8 +40,14 @@ class Api {
     return res.data;
   }
 
-  async fetchOpenings() {
-    const res = await axios.get(`${apiUrl}/openings`);
+  async fetchOpenings({ name, page = 1, limit = 10 }) {
+    const res = await axios.get(`${apiUrl}/openings`, {
+      params: {
+        name,
+        offset: limit * (page - 1),
+        limit,
+      },
+    });
     return res.data;
   }
 
