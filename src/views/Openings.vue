@@ -13,9 +13,9 @@
 
     <v-row class="mb-0" style="font-size: 0.875rem; opacity: 0.8">
         <v-col cols="auto" class="d-flex align-center">
-            <v-text-field variant="outlined" density="compact" label="Search by Name" prepend-inner-icon="mdi-magnify"
-                min-width="320px" hide-details>
-            </v-text-field>
+            <TextFieldDebounced v-model="filters.name" variant="outlined" density="compact" label="Search by Name"
+                prepend-inner-icon="mdi-magnify" min-width="210px" hide-details>
+            </TextFieldDebounced>
         </v-col>
         <v-spacer></v-spacer>
         <v-col cols="auto" class="d-flex align-center">
@@ -72,9 +72,13 @@
 
 <script>
 // import Board from '../components/Board/Board.vue';
+import TextFieldDebounced from '../components/common/TextFieldDebounced.vue';
 
 import api from '../services/Api';
 export default {
+    components: {
+        TextFieldDebounced,
+    },
     name: 'Openings',
     data() {
         return {
@@ -85,7 +89,11 @@ export default {
                 page: 1,
                 limit: 5
             },
+            filters: {
+                name: null
+            },
             newOpening: {},
+
         }
     },
     async mounted() {
@@ -108,10 +116,17 @@ export default {
         'pagination.page'() {
             this.fetchOpenings()
         },
+        filters: {
+            handler() {
+                this.fetchOpenings()
+            },
+            deep: true
+        }
     },
     methods: {
         async fetchOpenings() {
             const params = {
+                ...this.filters,
                 ...this.pagination
             }
             console.log("fetch", params);
