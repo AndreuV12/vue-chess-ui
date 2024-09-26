@@ -1,24 +1,15 @@
 <template>
     <h1 class="mb-2">Opening Detail</h1>
     <span class="openingTitle mb-2">{{ opening.name }}</span>
-    <v-row class="d-flex flex-nowrap" style="max-height: 80vh">
-        <v-col cols="8">
-            <InteractiveBoard :fen="fen" @move="handleMove"></InteractiveBoard>
+    <v-row class="d-flex flex-nowrap" style="max-height: 75vh; overflow: scroll;">
+        <v-col cols="8" style="min-height: 400px; min-width: 400px;">
+            <InteractiveBoard :fen="fen" @move="handleMove">
+            </InteractiveBoard>
         </v-col>
-        <v-col cols="4">
-            <MovesTable :moves="moves" @clickMove="doMoveFromTable"></MovesTable>
-            <v-row>
-                <v-col>
-                    <v-btn class="mt-4" @click.stop="path.pop()">
-                        Prev
-                    </v-btn>
-                </v-col>
-                <v-col class="text-end">
-                    <v-btn class="mt-4" @click.stop="path.pop()">
-                        Next
-                    </v-btn>
-                </v-col>
-            </v-row>
+        <v-col cols="auto" style="min-height: 400px;">
+            <MovesTable :moves="moves" @clickMove="doMoveFromTable" @clickPrev="goPrevMove" @clickNext="goNextMove"
+                style="min-width: 240px">
+            </MovesTable>
         </v-col>
         <!-- <v-col>
         </v-col> -->
@@ -58,12 +49,9 @@ export default {
         fen() {
             if (!this.opening?.data) return null
             let data = JSON.parse(JSON.stringify(this.opening.data))
-            console.log("computing fen", data, this.path);
             for (const move of this.path) {
                 data = data?.moves[move]
             }
-            console.log(data);
-
             return data.fen
         },
         moves() {
@@ -76,16 +64,13 @@ export default {
         }
     },
     methods: {
+        // From Board
         async handleMove(move) {
-            const moveName = JSON.stringify(move)
+            const moveName = ChessEngine.getMoveName(this.fen, move[0], move[1])
             if (!Object.keys(this.moves).includes(moveName)) {
                 const fen = ChessEngine.doMove(this.fen, move[0], move[1])
                 this.addMoveToOpening(moveName, this.opening, this.path, fen)
             }
-            this.path.push(moveName)
-        },
-
-        doMoveFromTable(moveName) {
             this.path.push(moveName)
         },
 
@@ -103,6 +88,22 @@ export default {
             this.opening = openingCopy
             const updatedOpening = await api.addMoveToOpening(opening.id, moveName, newMove, path)
             this.opening = updatedOpening
+        },
+
+        // From Board
+        doMoveFromTable(moveName) {
+            this.path.push(moveName)
+        },
+
+        goPrevMove() {
+            this.path.pop()
+        },
+
+        goNextMove() {
+            const nextMove = Object.keys(this.moves)?.[0]
+            if (nextMove) {
+                this.path.push(nextMove)
+            }
         }
     }
 };
