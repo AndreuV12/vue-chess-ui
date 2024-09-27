@@ -65,18 +65,22 @@ export default {
     },
     methods: {
         // From Board
-        async handleMove(move) {
-            const moveName = ChessEngine.getMoveName(this.fen, move[0], move[1])
-            if (!Object.keys(this.moves).includes(moveName)) {
-                const fen = ChessEngine.doMove(this.fen, move[0], move[1])
-                this.addMoveToOpening(moveName, this.opening, this.path, fen)
+        async handleMove([from, to]) {
+            const uciMove = ChessEngine.getUciMove(from, to)
+            if (!Object.keys(this.moves).includes(uciMove)) {
+                const moveName = ChessEngine.getMoveName(this.fen, from, to)
+                const fen = ChessEngine.doMove(this.fen, from, to)
+                this.addMoveToOpening(moveName, [from, to], this.opening, this.path, fen)
             }
-            this.path.push(moveName)
+            this.path.push(uciMove)
         },
 
-        async addMoveToOpening(moveName, opening, path, fen) { // Updates opening syncronously (computing locally) so it is not necessary to await for response
+        async addMoveToOpening(moveName, [from, to], opening, path, fen) { // Updates opening syncronously (computing locally) so it is not necessary to await for response
+            const uciMove = ChessEngine.getUciMove(from, to)
             const newMove = {
                 fen,
+                uci: uciMove,
+                name: moveName,
                 moves: {}
             }
             const openingCopy = JSON.parse(JSON.stringify(opening))
@@ -84,15 +88,16 @@ export default {
             for (const move of path) {
                 data = data.moves[move]
             }
-            data.moves[moveName] = newMove
-            this.opening = openingCopy
-            const updatedOpening = await api.addMoveToOpening(opening.id, moveName, newMove, path)
-            this.opening = updatedOpening
+            data.moves[uciMove] = newMove
+            this.opening = openingCopy // Update before response
+
+            const updatedOpening = await api.addMoveToOpening(opening.id, newMove, path)
+            this.opening = updatedOpening // Update with response go get data sync
         },
 
         // From Board
-        doMoveFromTable(moveName) {
-            this.path.push(moveName)
+        doMoveFromTable(moveUci) {
+            this.path.push(moveUci)
         },
 
         goPrevMove() {
@@ -100,7 +105,7 @@ export default {
         },
 
         goNextMove() {
-            const nextMove = Object.keys(this.moves)?.[0]
+            const nextMove = Object.values(this.moves)?.[0].uci
             if (nextMove) {
                 this.path.push(nextMove)
             }

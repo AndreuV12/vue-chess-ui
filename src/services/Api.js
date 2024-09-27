@@ -61,9 +61,8 @@ class Api {
     return res.data;
   }
 
-  async addMoveToOpening(id, move_name, move, path) {
+  async addMoveToOpening(id, move, path) {
     const res = await axios.patch(`${apiUrl}/openings/${id}/add_move`, {
-      move_name,
       move,
       path,
     });

@@ -8,8 +8,8 @@
                 </tr>
             </thead>
             <tbody class="moves-table__body">
-                <tr v-for="(moveData, moveName) in moves" :key="moveName" @click.stop="handleMoveClicked(moveName)">
-                    <td> {{ moveName }} </td>
+                <tr v-for="(moveData, moveUci) in moves" :key="moveName" @click.stop="handleMoveClicked(moveUci)">
+                    <td> {{ moveData.name }} </td>
                     <td>
                         +0.4
                     </td>

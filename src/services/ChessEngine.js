@@ -29,9 +29,11 @@ class ChessEngine {
     /**
      * @returns {string} El nuevo fen  recalculado despues de aplicar el movimiento
      */
-    console.log("doing Move", fen, from, to);
-
     return move(fen, from, to);
+  }
+
+  static getUciMove(from, to) {
+    return `${from}${to}`.toLowerCase();
   }
 
   static getMoveName(fen, from, to) {
