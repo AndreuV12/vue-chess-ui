@@ -11,7 +11,9 @@
                 <tr v-for="(moveData, moveUci) in moves" :key="moveName" @click.stop="handleMoveClicked(moveUci)">
                     <td> {{ moveData.name }} </td>
                     <td>
-                        +0.4
+                        <span v-if="moveData.analysis">
+                            {{ moveData.analysis[0].score / 100 }}
+                        </span>
                     </td>
                 </tr>
             </tbody>
