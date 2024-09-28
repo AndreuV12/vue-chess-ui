@@ -32,60 +32,21 @@ class ChessEngine {
     return move(fen, from, to);
   }
 
+  /**
+   * @returns {string} El movimiento codificado en formato uci
+   */
   static getUciMove(from, to) {
     return `${from}${to}`.toLowerCase();
   }
 
-  static getMoveName(fen, from, to) {
-    const pieces = this.getPieces(fen);
-    const piece = pieces[from];
-    const captured = Boolean(pieces[to]);
-
-    // Check Promotion
-    if (piece.toUpperCase() === "P") {
-      const isPromotion = to[1] === "1" || to[1] === "8";
-      if (isPromotion) {
-        return this.handlePawnPromotion(piece, to);
-      } else {
-        return captured ? `${from[0]}x${to}`.toLowerCase() : to.toLowerCase();
-      }
-    }
-
-    // Check Castling
-    if (piece.toUpperCase() === "K") {
-      if ((from === "E1" && to === "G1") || (from === "E8" && to === "G8")) {
-        return "0-0";
-      }
-      if ((from === "E1" && to === "C1") || (from === "E8" && to === "C8")) {
-        return "0-0-0";
-      }
-    }
-
-    // Other cases
-    let moveName = piece.toUpperCase();
-
-    // Solve ambiguity
-    const possibleMoves = moves(fen);
-    const samePieces = Object.keys(possibleMoves).filter(
-      (el) => pieces[el] === piece && el !== from
-    );
-    let moveIndicator = "";
-    for (const el of samePieces) {
-      if (possibleMoves[el]?.includes(to)) {
-        if (el[0] !== from[0]) {
-          moveIndicator += from[0].toLowerCase(); // Especifica columna
-        } else {
-          moveIndicator += from[1]; // Especifica fila
-        }
-        break;
-      }
-    }
-    moveName += moveIndicator;
-
-    // Capture
-    if (captured) moveName += "x";
-    moveName += to.toLowerCase();
-    return moveName;
+  static getCoordinadesMove(uciMove) {
+    /**
+     * @returns {[string, string]} El movimiento codificado en formato [from, to]
+     *  Ejemplo de resultado: ['E2', 'E4']
+     */
+    const from = uciMove.slice(0, 2).toUpperCase(); // Primeras dos letras
+    const to = uciMove.slice(2, 4).toUpperCase(); // Siguientes dos letras
+    return [from, to];
   }
 }
 

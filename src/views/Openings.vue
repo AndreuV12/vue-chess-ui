@@ -1,16 +1,5 @@
 <template>
     <h1 class="mb-8">Openings</h1>
-
-    <!-- <v-row class="mb-0">
-        <v-spacer></v-spacer>
-        <v-col cols="auto">
-            <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
-                <v-icon>mdi-plus</v-icon>
-                New Opening
-            </v-btn>
-        </v-col>
-    </v-row> -->
-
     <v-row class="mb-0" style="font-size: 0.875rem; opacity: 0.8">
         <v-col cols="auto" class="d-flex align-center">
             <TextFieldDebounced v-model="filters.name" variant="outlined" density="compact" label="Search by Name"
@@ -57,7 +46,6 @@
             </tr>
         </tbody>
     </v-table>
-
     <v-navigation-drawer location="right" temporary v-model="rightBar" width="400">
         <v-container>
             <h3>New Opening</h3>
@@ -67,7 +55,6 @@
             </v-form>
         </v-container>
     </v-navigation-drawer>
-
 </template>
 
 <script>

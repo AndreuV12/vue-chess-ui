@@ -7,14 +7,11 @@
             </InteractiveBoard>
         </v-col>
         <v-col cols="auto" style="min-height: 400px;">
-            <MovesTable :moves="moves" @clickMove="doMoveFromTable" @clickPrev="goPrevMove" @clickNext="goNextMove"
-                style="min-width: 240px">
+            <MovesTable :moves="moves" :bestMoves="bestMoves" @clickMove="handleUciMove" @clickPrev="goPrevMove"
+                @clickNext="goNextMove" style="min-width: 240px">
             </MovesTable>
         </v-col>
-        <!-- <v-col>
-        </v-col> -->
     </v-row>
-
 </template>
 
 <script>
@@ -42,8 +39,6 @@ export default {
     },
     async mounted() {
         this.opening = await api.fetchOpening(this.$route.params.id)
-        console.log(this.opening);
-
     },
     computed: {
         fen() {
@@ -61,6 +56,14 @@ export default {
                 data = data.moves[move]
             }
             return data.moves
+        },
+        bestMoves() {
+            if (!this.opening?.data) return null
+            let data = JSON.parse(JSON.stringify(this.opening.data))
+            for (const move of this.path) {
+                data = data.moves[move]
+            }
+            return data.analysis || []
         }
     },
     methods: {
@@ -68,19 +71,16 @@ export default {
         async handleMove([from, to]) {
             const uciMove = ChessEngine.getUciMove(from, to)
             if (!Object.keys(this.moves).includes(uciMove)) {
-                const moveName = ChessEngine.getMoveName(this.fen, from, to)
                 const fen = ChessEngine.doMove(this.fen, from, to)
-                this.addMoveToOpening(moveName, [from, to], this.opening, this.path, fen)
+                this.addMoveToOpening(uciMove, this.opening, this.path, fen) // No dot await until response
             }
             this.path.push(uciMove)
         },
 
-        async addMoveToOpening(moveName, [from, to], opening, path, fen) { // Updates opening syncronously (computing locally) so it is not necessary to await for response
-            const uciMove = ChessEngine.getUciMove(from, to)
+        async addMoveToOpening(uciMove, opening, path, fen) { // Updates opening syncronously (computing locally) so it is not necessary to await for response
             const newMove = {
                 fen,
                 uci: uciMove,
-                name: moveName,
                 moves: {}
             }
             const openingCopy = JSON.parse(JSON.stringify(opening))
@@ -91,13 +91,19 @@ export default {
             data.moves[uciMove] = newMove
             this.opening = openingCopy // Update before response
 
+            const pathDeepBeforeRequest = this.path.length
             const updatedOpening = await api.addMoveToOpening(opening.id, newMove, path)
-            this.opening = updatedOpening // Update with response go get data sync
+            const pathDeepAfterRequest = this.path.length
+
+            if (pathDeepBeforeRequest + 1 == pathDeepAfterRequest) { // No new moves while request is solving
+                this.opening = updatedOpening
+            }
         },
 
-        // From Board
-        doMoveFromTable(moveUci) {
-            this.path.push(moveUci)
+        // From Table
+        async handleUciMove(uciMove) {
+            const [from, to] = ChessEngine.getCoordinadesMove(uciMove)
+            this.handleMove([from, to])
         },
 
         goPrevMove() {
@@ -105,7 +111,7 @@ export default {
         },
 
         goNextMove() {
-            const nextMove = Object.values(this.moves)?.[0].uci
+            const nextMove = Object.values(this.moves)?.[0]?.uci
             if (nextMove) {
                 this.path.push(nextMove)
             }

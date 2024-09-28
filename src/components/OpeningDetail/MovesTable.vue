@@ -8,13 +8,27 @@
                 </tr>
             </thead>
             <tbody class="moves-table__body">
-                <tr v-for="(moveData, moveUci) in moves" :key="moveName" @click.stop="handleMoveClicked(moveUci)">
-                    <td> {{ moveData.name }} </td>
+                <tr v-for="(moveData, moveUci) in moves" :key="moveUci" @click.stop="handleMoveClicked(moveUci)">
+                    <td> {{ moveData.name || ".." }} </td>
                     <td>
                         <span v-if="moveData.analysis">
                             {{ moveData.analysis[0].score / 100 }}
                         </span>
                     </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        StockfishMoves
+                    </td>
+                </tr>
+                <tr v-for="moveData in bestMoves" @click.stop="handleMoveClicked(moveData.uci)">
+                    <td> {{ moveData.name || ".." }} </td>
+                    <td>
+                        <span>
+                            {{ moveData.score / 100 }}
+                        </span>
+                    </td>
+
                 </tr>
             </tbody>
         </v-table>
@@ -33,6 +47,10 @@ export default {
             type: Object,
             default: () => { }
         },
+        bestMoves: {
+            type: Array,
+            default: () => []
+        }
     },
     data: () => ({
 
@@ -44,14 +62,14 @@ export default {
     watch: {
     },
     methods: {
-        handleMoveClicked(moveName) {
-            this.$emit('click-move', moveName)
+        handleMoveClicked(uciMove) {
+            this.$emit('click-move', uciMove)
         },
-        handlePrevClicked(moveName) {
-            this.$emit('click-prev', moveName)
+        handlePrevClicked() {
+            this.$emit('click-prev')
         },
-        handleNextClicked(moveName) {
-            this.$emit('click-next', moveName)
+        handleNextClicked() {
+            this.$emit('click-next')
         }
     },
 }

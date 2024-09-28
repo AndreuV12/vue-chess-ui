@@ -1,4 +1,3 @@
-<!-- src/App.vue -->
 <template>
   <v-app>
     <template v-if="showLayout">
@@ -14,7 +13,6 @@
 </template>
 
 <script>
-
 import Appbar from './layouts/Appbar.vue'
 import Sidebar from './layouts/Sidebar.vue'
 
