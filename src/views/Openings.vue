@@ -19,7 +19,7 @@
             <v-pagination v-model="pagination.page" :length="pagetotal" size="small" total-visible="3"></v-pagination>
         </v-col>
     </v-row>
-    <v-table class="mb-4" height="400px">
+    <v-table class="mb-4" height="400px" v-if="openings.length">
         <thead>
             <tr>
                 <th></th>
@@ -46,6 +46,12 @@
             </tr>
         </tbody>
     </v-table>
+    <div v-else class="no-openings-message">
+        <p class="pb-4">No openings stored yet</p>
+        <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
+            <span style="font-weight: bold;">Create a new one!</span>
+        </v-btn>
+    </div>
     <v-navigation-drawer location="right" temporary v-model="rightBar" width="400">
         <v-container>
             <h3>New Opening</h3>
@@ -149,3 +155,15 @@ export default {
     }
 };
 </script>
+<style>
+.no-openings-message {
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>

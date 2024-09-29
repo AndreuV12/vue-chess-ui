@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <template v-if="showLayout">
-      <Appbar @toggleSidebar="sidebar = !sidebar" />
+      <Appbar @toggleSidebar="toggleSidebar" />
       <Sidebar v-model="sidebar" />
     </template>
     <v-main>
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import Mousetrap from 'mousetrap';
+
 import Appbar from './layouts/Appbar.vue'
 import Sidebar from './layouts/Sidebar.vue'
 
@@ -21,6 +23,7 @@ export default {
   components: {
     Appbar,
     Sidebar,
+    Mousetrap,
   },
   data() {
     return {
@@ -31,6 +34,14 @@ export default {
     showLayout() {
       return !(this.$route.name === 'Login' || this.$route.name === 'Register');
     }
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebar = !this.sidebar
+    }
+  },
+  mounted() {
+    Mousetrap.bind('[', this.toggleSidebar);
   },
 };
 </script>

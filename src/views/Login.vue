@@ -4,9 +4,10 @@
             <v-card class="pa-5" min-width="500">
                 <v-card-title class="d-flex justify-center mb-2">Iniciar sesión</v-card-title>
                 <v-card-text>
-                    <v-text-field v-model="username" :rules="usernameRules" label="Usuario" prepend-icon="mdi-account"
-                        class="mb-2"></v-text-field>
-                    <v-text-field v-model="password" :rules="passwordRules" label="Contraseña" type="password"
+                    <v-text-field v-model="username" id="username" name="username" autocomplete="username"
+                        :rules="usernameRules" label="Usuario" prepend-icon="mdi-account" class="mb-2"></v-text-field>
+                    <v-text-field v-model="password" id="password" name="password" autocomplete="current-password"
+                        :rules="passwordRules" label="Contraseña" type="password"
                         prepend-icon="mdi-lock"></v-text-field>
                 </v-card-text>
                 <v-card-actions>

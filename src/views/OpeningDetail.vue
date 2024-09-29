@@ -8,7 +8,7 @@
         </v-col>
         <v-col cols="auto" style="min-height: 400px;">
             <MovesTable :moves="moves" :bestMoves="bestMoves" @clickMove="handleUciMove" @clickPrev="goPrevMove"
-                @clickNext="goNextMove" style="min-width: 240px">
+                @clickNext="goNextMove">
             </MovesTable>
         </v-col>
     </v-row>
