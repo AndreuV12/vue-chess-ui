@@ -1,5 +1,5 @@
 <template>
-  <div class="borderedBoard d-flex justify-center align-center">
+  <div class="borderedBoard d-flex justify-center align-center" :style="{ width: width, height: width }">
     <div class="board">
       <div v-for="(coor, index) in coorditates" :key="coor" @click.stop="handleClick(coor)"
         :class="['cell', isBlackCell(index) ? 'black-cell' : 'white-cell']">
@@ -23,6 +23,10 @@ export default {
     fen: {
       type: String,
       default: () => "8/8/8/8/8/8/8/8 w KQkq - 0 1"
+    },
+    width: {
+      type: String,
+      default: () => "600px"
     },
     selectedCoor: {
       type: String,
@@ -63,10 +67,9 @@ export default {
 
 <style scoped>
 .borderedBoard {
-  aspect-ratio: 1;
   background-color: black;
-  max-width: 100%;
-  max-height: 100%;
+  height: 600px;
+  width: 600px;
 }
 
 .board {

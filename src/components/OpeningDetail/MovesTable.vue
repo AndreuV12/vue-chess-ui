@@ -1,5 +1,5 @@
 <template>
-    <div class="moves-table-container fill-height">
+    <div class="moves-table-container" :style="{ height: height }">
         <v-table class="moves-table" dense density="compact">
             <tbody class="moves-table__body">
                 <tr>
@@ -61,6 +61,10 @@ export default {
         bestMoves: {
             type: Array,
             default: () => []
+        },
+        height: {
+            type: String,
+            default: () => "600px"
         }
     },
     emits: {

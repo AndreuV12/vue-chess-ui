@@ -1,14 +1,25 @@
 <template>
     <h1 class="mb-2">Opening Detail</h1>
-    <span class="openingTitle mb-2">{{ opening.name }}</span>
-    <v-row class="d-flex flex-nowrap" style="max-height: 75vh; overflow: scroll;">
-        <v-col cols="8" style="min-height: 400px; min-width: 400px;">
-            <InteractiveBoard :fen="fen" @move="handleMove">
+
+    <div class="d-flex mb-6  align-center justify-space-between">
+        <!-- Aquí iran mas botones -->
+        <span class="openingTitle mb-2">{{ opening.name }}</span>
+        <div>
+            <v-btn variant="text" icon="mdi-image-move"></v-btn>
+            <v-btn variant="text" icon="mdi-orbit-variant"></v-btn>
+            <v-btn variant="text" icon="mdi-cog"></v-btn>
+        </div>
+
+    </div>
+
+    <v-row class="d-flex flex-nowrap justify-center">
+        <v-col cols="auto" style="min-width: fit-content;">
+            <InteractiveBoard :fen="fen" :width="'75vh'" @move="handleMove">
             </InteractiveBoard>
         </v-col>
-        <v-col cols="auto" style="min-height: 400px;">
+        <v-col cols="auto" style="min-width: fit-content;">
             <MovesTable :moves="moves" :bestMoves="bestMoves" @clickMove="handleUciMove" @clickPrev="goPrevMove"
-                @clickNext="goNextMove">
+                @clickNext="goNextMove" :height="'75vh'">
             </MovesTable>
         </v-col>
     </v-row>
