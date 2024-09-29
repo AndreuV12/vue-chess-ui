@@ -7,14 +7,15 @@
                         <span style="font-weight: bold"> Best Moves</span>
                     </td>
                 </tr>
-                <tr v-for="moveData, i in bestMoves" @click.stop="handleMoveClicked(moveData.uci)" class="move-row">
+                <tr v-for="move, i of bestMoves" :key="i" @click.stop="handleMoveClicked(move.uci)"
+                    :class="['move-row', { 'selected': i == selectedMoveIndex }]">
                     <td width="100px">
                         <span style="color: grey" class="mr-6">{{ i + 1 }}</span>
-                        <span>{{ moveData.name || ".." }}</span>
+                        <span>{{ move.name || ".." }}</span>
                     </td>
                     <td width="60px">
                         <span>
-                            {{ formatScore(moveData.score) }}
+                            {{ formatScore(move.score) }}
                         </span>
                     </td>
                 </tr>
@@ -24,14 +25,14 @@
                         <span style="font-weight: bold"> Stored Moves</span>
                     </td>
                 </tr>
-                <tr v-for="(moveData, moveUci) in moves" :key="moveUci" @click.stop="handleMoveClicked(moveUci)"
-                    class="move-row">
+                <tr v-for="move, i of moves" :key="i" @click.stop="handleMoveClicked(moveUci)"
+                    :class="['move-row', { 'selected': i + bestMoves.length == selectedMoveIndex }]">
                     <td width="100px">
-                        <span>{{ moveData.name || ".." }}</span>
+                        <span>{{ move.name || ".." }}</span>
                     </td>
                     <td width="60px">
-                        <span v-if="moveData.analysis">
-                            {{ formatScore(moveData.analysis[0].score) }}
+                        <span v-if="move.score">
+                            {{ formatScore(move.score) }}
                         </span>
                     </td>
                 </tr>
@@ -72,11 +73,15 @@ export default {
             return typeof uciMove == 'string' && [4, 5].includes(uciMove.length)
         },
         'click-prev': null,
-        'click-next': null,
     },
     data: () => ({
-
+        selectedMoveIndex: null,
     }),
+    computed: {
+        allMoves() {
+            return [...this.bestMoves, ...this.moves]
+        }
+    },
     methods: {
         handleMoveClicked(uciMove) {
             this.$emit('click-move', uciMove)
@@ -85,7 +90,13 @@ export default {
             this.$emit('click-prev')
         },
         handleNextClicked() {
-            this.$emit('click-next')
+            if (!this.allMoves.length) return
+            if (this.selectedMoveIndex == null) {
+                this.selectedMoveIndex = 0
+            }
+            else {
+                this.$emit('click-move', this.allMoves[this.selectedMoveIndex].uci)
+            }
         },
         formatScore(scoreInCentipawns) {
             if (scoreInCentipawns > 0) {
@@ -93,11 +104,38 @@ export default {
             }
             else return String(scoreInCentipawns / 100)
 
-        }
+        },
+        selectNextMove(e) {
+            if (!this.allMoves.length) return
+            e.preventDefault()
+            if (this.selectedMoveIndex == null) {
+                this.selectedMoveIndex = 0
+            }
+            else {
+                this.selectedMoveIndex = (this.selectedMoveIndex + 1) % this.allMoves.length
+            }
+        },
+        selectPrevMove(e) {
+            if (!this.allMoves.length) return
+            e.preventDefault()
+            if (this.selectedMoveIndex == null && this.allMoves.length) {
+                this.selectedMoveIndex = this.allMoves.length - 1
+            }
+            else {
+                this.selectedMoveIndex = (this.selectedMoveIndex - 1 + this.allMoves.length) % this.allMoves.length
+            }
+        },
+    },
+    watch: {
+        allMoves() {
+            this.selectedMoveIndex = null
+        },
     },
     mounted() {
         Mousetrap.bind('right', this.handleNextClicked)
         Mousetrap.bind('left', this.handlePrevClicked)
+        Mousetrap.bind('down', this.selectNextMove)
+        Mousetrap.bind('up', this.selectPrevMove)
     },
 }
 </script>
@@ -128,11 +166,15 @@ export default {
     cursor: pointer;
 }
 
+.moves-table__body>tr.move-row.selected {
+    background-color: rgba(255, 240, 81, 0.6);
+    cursor: pointer;
+}
+
 .moves-table-container__actions {
     position: absolute;
     bottom: 0;
     left: 0;
-    /* border: 2px solid red; */
     width: 100%;
 }
 

@@ -6,7 +6,7 @@
         <span class="openingTitle mb-2">{{ opening.name }}</span>
         <div>
             <v-btn variant="text" icon="mdi-image-move"></v-btn>
-            <v-btn variant="text" icon="mdi-orbit-variant"></v-btn>
+            <v-btn variant="text" icon="mdi-orbit-variant" @click="rotateBoard"></v-btn>
             <v-btn variant="text" icon="mdi-cog"></v-btn>
         </div>
 
@@ -14,18 +14,20 @@
 
     <v-row class="d-flex flex-nowrap justify-center">
         <v-col cols="auto" style="min-width: fit-content;">
-            <InteractiveBoard :fen="fen" :width="'75vh'" @move="handleMove">
+            <InteractiveBoard :fen="fen" :width="'75vh'" :rotated="rotated" @move="handleMove">
             </InteractiveBoard>
         </v-col>
         <v-col cols="auto" style="min-width: fit-content;">
-            <MovesTable :moves="moves" :bestMoves="bestMoves" @clickMove="handleUciMove" @clickPrev="goPrevMove"
-                @clickNext="goNextMove" :height="'75vh'">
+            <MovesTable :moves="sortedStoredMoves" :bestMoves="sortedBestMoves" @clickMove="handleUciMove"
+                @clickPrev="goPrevMove" @clickNext="goNextMove" :height="'75vh'">
             </MovesTable>
         </v-col>
     </v-row>
 </template>
 
 <script>
+import Mousetrap from 'mousetrap';
+
 import Board from '../components/Board/Board.vue';
 import InteractiveBoard from '../components/OpeningDetail/InteractiveBoard.vue';
 import MovesTable from '../components/OpeningDetail/MovesTable.vue';
@@ -40,16 +42,14 @@ export default {
         MovesTable,
     },
     name: 'Openings',
-
     data() {
         return {
             rightBar: false,
             opening: {},
-            path: [] // played moves
+            path: [],
+            lastAddedMove: null,
+            rotated: false,
         }
-    },
-    async mounted() {
-        this.opening = await api.fetchOpening(this.$route.params.id)
     },
     computed: {
         fen() {
@@ -66,16 +66,27 @@ export default {
             for (const move of this.path) {
                 data = data.moves[move]
             }
-            return data.moves
+            return data.moves || {}
         },
-        bestMoves() {
+        analysis() {
             if (!this.opening?.data) return null
             let data = JSON.parse(JSON.stringify(this.opening.data))
             for (const move of this.path) {
                 data = data.moves[move]
             }
             return data.analysis || []
-        }
+        },
+
+        sortedStoredMoves() {
+            if (!this.moves) return []
+            return Object.values(this.moves).map(move => ({ name: move.name, uci: move.uci, score: move.analysis?.[0]?.score }))
+        },
+
+        sortedBestMoves() {
+            if (!this.analysis) return []
+            return this.analysis.map(move => ({ name: move.name, uci: move.uci, score: move.score }))
+        },
+
     },
     methods: {
         // From Board
@@ -102,15 +113,13 @@ export default {
             data.moves[uciMove] = newMove
             this.opening = openingCopy // Update before response
 
-            const pathDeepBeforeRequest = this.path.length
+            this.lastAddedMove = uciMove
             const updatedOpening = await api.addMoveToOpening(opening.id, newMove, path)
-            const pathDeepAfterRequest = this.path.length
 
-            if (pathDeepBeforeRequest + 1 == pathDeepAfterRequest) { // No new moves while request is solving
+            if (this.lastAddedMove == uciMove) { // No new moves while request is solving
                 this.opening = updatedOpening
             }
         },
-
         // From Table
         async handleUciMove(uciMove) {
             const [from, to] = ChessEngine.getCoordinadesMove(uciMove)
@@ -126,8 +135,16 @@ export default {
             if (nextMove) {
                 this.path.push(nextMove)
             }
+        },
+
+        rotateBoard() {
+            this.rotated = !this.rotated
         }
-    }
+    },
+    async mounted() {
+        Mousetrap.bind('r', this.rotateBoard)
+        this.opening = await api.fetchOpening(this.$route.params.id)
+    },
 };
 </script>
 <style>
