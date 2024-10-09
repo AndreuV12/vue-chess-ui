@@ -1,12 +1,13 @@
 <template>
     <h1 class="mb-8">Openings</h1>
-    <v-row class="mb-0" style="font-size: 0.875rem; opacity: 0.8">
+    <v-row class="mb-0 d-flex align-center" style="font-size: 0.875rem; opacity: 0.8">
         <v-col cols="auto" class="d-flex align-center">
             <TextFieldDebounced v-model="filters.name" variant="outlined" density="compact" label="Search by Name"
                 prepend-inner-icon="mdi-magnify" min-width="210px" hide-details>
             </TextFieldDebounced>
         </v-col>
         <v-spacer></v-spacer>
+        <v-btn :loading="loading" icon="mdi-refresh" @click="fetchOpenings" variant="text"></v-btn>
         <v-col cols="auto" class="d-flex align-center">
             <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
                 <span style="font-weight: bold;">New Opening</span>
@@ -46,7 +47,7 @@
             </tr>
         </tbody>
     </v-table>
-    <div v-else class="no-openings-message">
+    <div v-else-if="!loading" class="no-openings-message">
         <p class="pb-4">No openings stored yet</p>
         <v-btn variant="text" color="teal-darken-2" @click.stop="rightBar = true">
             <span style="font-weight: bold;">Create a new one!</span>
@@ -75,6 +76,7 @@ export default {
     name: 'Openings',
     data() {
         return {
+            loading: true,
             rightBar: false,
             openings: [],
             total: 0, // Openings total
@@ -118,14 +120,15 @@ export default {
     },
     methods: {
         async fetchOpenings() {
+            this.loading = true
             const params = {
                 ...this.filters,
                 ...this.pagination
             }
-            console.log("fetch", params);
             const { openings, total } = await api.fetchOpenings(params)
             this.openings = openings
             this.total = total
+            this.loading = false
         },
         async createOpening(opening) {
             try {

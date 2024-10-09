@@ -100,7 +100,7 @@ export default {
         handleNextClicked() {
             if (!this.allMoves.length) return
             if (this.selectedMoveIndex == null) {
-                this.selectedMoveIndex = this.bestMoves.length
+                this.selectedMoveIndex = this.bestMoves.length % this.allMoves.length
             }
             else {
                 this.$emit('click-move', this.allMoves[this.selectedMoveIndex].uci)
@@ -110,7 +110,7 @@ export default {
             if (!this.allMoves.length) return
             e.preventDefault()
             if (this.selectedMoveIndex == null) {
-                this.selectedMoveIndex = this.bestMoves.length
+                this.selectedMoveIndex = this.bestMoves.length % this.allMoves.length
             }
             else if (this.selectedMoveIndex + 1 < this.allMoves.length) {
                 this.selectedMoveIndex = this.selectedMoveIndex + 1
