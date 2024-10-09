@@ -25,7 +25,7 @@
                         <span style="font-weight: bold"> Stored Moves</span>
                     </td>
                 </tr>
-                <tr v-for="move, i of moves" :key="i" @click.stop="handleMoveClicked(moveUci)"
+                <tr v-for="move, i of moves" :key="i" @click.stop="handleMoveClicked(move.uci)"
                     :class="['move-row', { 'selected': i + bestMoves.length == selectedMoveIndex }]">
                     <td width="100px">
                         <span>{{ move.name || ".." }}</span>
