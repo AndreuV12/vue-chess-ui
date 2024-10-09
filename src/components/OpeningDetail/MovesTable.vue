@@ -83,6 +83,14 @@ export default {
         }
     },
     methods: {
+        formatScore(scoreInCentipawns) {
+            if (scoreInCentipawns > 0) {
+                return `+${scoreInCentipawns / 100}`
+            }
+            else return String(scoreInCentipawns / 100)
+
+        },
+
         handleMoveClicked(uciMove) {
             this.$emit('click-move', uciMove)
         },
@@ -92,37 +100,36 @@ export default {
         handleNextClicked() {
             if (!this.allMoves.length) return
             if (this.selectedMoveIndex == null) {
-                this.selectedMoveIndex = 0
+                this.selectedMoveIndex = this.bestMoves.length
             }
             else {
                 this.$emit('click-move', this.allMoves[this.selectedMoveIndex].uci)
             }
         },
-        formatScore(scoreInCentipawns) {
-            if (scoreInCentipawns > 0) {
-                return `+${scoreInCentipawns / 100}`
-            }
-            else return String(scoreInCentipawns / 100)
-
-        },
         selectNextMove(e) {
             if (!this.allMoves.length) return
             e.preventDefault()
             if (this.selectedMoveIndex == null) {
-                this.selectedMoveIndex = 0
+                this.selectedMoveIndex = this.bestMoves.length
+            }
+            else if (this.selectedMoveIndex + 1 < this.allMoves.length) {
+                this.selectedMoveIndex = this.selectedMoveIndex + 1
             }
             else {
-                this.selectedMoveIndex = (this.selectedMoveIndex + 1) % this.allMoves.length
+                this.selectedMoveIndex = null
             }
         },
         selectPrevMove(e) {
             if (!this.allMoves.length) return
             e.preventDefault()
             if (this.selectedMoveIndex == null && this.allMoves.length) {
-                this.selectedMoveIndex = this.allMoves.length - 1
+                this.selectedMoveIndex = 0
+            }
+            else if (this.selectedMoveIndex - 1 >= 0) {
+                this.selectedMoveIndex = this.selectedMoveIndex - 1
             }
             else {
-                this.selectedMoveIndex = (this.selectedMoveIndex - 1 + this.allMoves.length) % this.allMoves.length
+                this.selectedMoveIndex = null
             }
         },
     },
