@@ -83,8 +83,7 @@ export default {
         },
 
         sortedBestMoves() {
-            if (!this.analysis) return []
-            return this.analysis.map(move => ({ name: move.name, uci: move.uci, score: move.score }))
+            return this.analysis || []
         },
 
     },
