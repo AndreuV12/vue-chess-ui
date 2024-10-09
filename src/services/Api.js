@@ -33,7 +33,7 @@ class Api {
   }
 
   async createOpening({ name, data }) {
-    const res = await axios.post(`${apiUrl}/openings/`, {
+    const res = await axios.post(`${apiUrl}/openings`, {
       name,
       data,
     });
