@@ -32,9 +32,10 @@ class Api {
     return res.data;
   }
 
-  async createOpening({ name, data }) {
+  async createOpening({ name, color="w", data }) {
     const res = await axios.post(`${apiUrl}/openings`, {
       name,
+      color,
       data,
     });
     return res.data;

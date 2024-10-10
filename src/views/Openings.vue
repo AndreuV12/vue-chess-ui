@@ -24,7 +24,8 @@
         <thead>
             <tr>
                 <th></th>
-                <th>Name</th>
+                <th width="200px">Name</th>
+                <th width="100px" clasS="text-center">Color</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -35,7 +36,10 @@
                     <v-icon>mdi-book-open-blank-variant</v-icon>
                 </td>
                 <td>
-                    {{ opening.name }}
+                    <span>{{ opening.name }}</span>
+                </td>
+                <td class="text-center d-flex justify-center align-center">
+                    <Piece style="width: 30px; height: 30px;" :piece="opening.color == 'w' ? 'K' : 'k'"></Piece>
                 </td>
                 <td></td>
                 <td class="text-end">
@@ -56,9 +60,25 @@
     <v-navigation-drawer location="right" temporary v-model="rightBar" width="400">
         <v-container>
             <h3>New Opening</h3>
-            <v-form ref="createOpeningForm" @submit.prevent="createOpening(newOpening)">
-                <v-text-field v-model="newOpening.name" label="Name" variant="underlined" />
-                <v-btn type="submit" variant="tonal" color="teal-darken-2">Create</v-btn>
+            <v-form ref="createOpeningForm" @submit.prevent="createOpening()" class="py-2">
+                <div class="my-4 d-flex align-center">
+                    <span class="mr-4" style="width: 60px">Name:</span>
+                    <v-text-field v-model="newOpening.name" density="compact" hide-details />
+                </div>
+                <div class="my-4 d-flex align-center">
+                    <span class="mr-4" style="width: 60px">Color:</span>
+                    <v-btn-toggle v-model="newOpening.color">
+                        <v-btn value="w" hide-details>
+                            <Piece style="width: 40px; height: 40px" piece="K" />
+                        </v-btn>
+                        <v-btn value="b" hide-details>
+                            <Piece style="width: 40px; height: 40px" piece="k" />
+                        </v-btn>
+                    </v-btn-toggle>
+                </div>
+                <div>
+                    <v-btn type="submit" variant="tonal" color="teal-darken-2">Create</v-btn>
+                </div>
             </v-form>
         </v-container>
     </v-navigation-drawer>
@@ -67,10 +87,11 @@
 <script>
 // import Board from '../components/Board/Board.vue';
 import TextFieldDebounced from '../components/common/TextFieldDebounced.vue';
-
+import Piece from "../components/Board/Piece/Piece.vue"
 import api from '../services/Api';
 export default {
     components: {
+        Piece,
         TextFieldDebounced,
     },
     name: 'Openings',
@@ -130,9 +151,11 @@ export default {
             this.total = total
             this.loading = false
         },
-        async createOpening(opening) {
+        async createOpening() {
+            if (!this.newOpening?.name?.length) return
             try {
-                const createdOpening = await api.createOpening(opening)
+                const createdOpening = await api.createOpening(this.newOpening)
+                this.newOpening = {}
                 this.openings.push(createdOpening)
                 this.total++
             } catch (e) {

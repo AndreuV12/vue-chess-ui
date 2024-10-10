@@ -153,6 +153,7 @@ export default {
     async mounted() {
         Mousetrap.bind('r', this.rotateBoard)
         this.opening = await api.fetchOpening(this.$route.params.id)
+        if (this.opening.color == 'b') this.rotated = true
     },
 };
 </script>
