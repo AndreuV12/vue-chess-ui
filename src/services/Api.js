@@ -68,6 +68,14 @@ class Api {
     });
     return res.data;
   }
+
+  async deleteMoveFromOpening(id, move, path) {
+    const res = await axios.patch(`${apiUrl}/openings/${id}/delete_move`, {
+      move,
+      path,
+    });
+    return res.data;
+  }
 }
 
 const api = new Api();

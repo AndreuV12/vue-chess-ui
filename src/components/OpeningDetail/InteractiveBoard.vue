@@ -70,7 +70,8 @@ export default {
         },
 
         doMove(from, to) {
-            this.$emit('move', [from, to])
+            const uciMove = ChessEngine.getUciMove(from, to)
+            this.$emit('move', uciMove)
         }
     },
 }

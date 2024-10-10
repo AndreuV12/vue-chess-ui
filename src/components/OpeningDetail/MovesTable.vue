@@ -3,7 +3,7 @@
         <v-table class="moves-table" dense density="compact">
             <tbody class="moves-table__body">
                 <tr>
-                    <td colspan="2" class="pt-2">
+                    <td colspan="3" class="pt-2">
                         <span style="font-weight: bold"> Best Moves</span>
                     </td>
                 </tr>
@@ -18,10 +18,12 @@
                             {{ formatScore(move.score) }}
                         </span>
                     </td>
+                    <td width="80px">
+                    </td>
                 </tr>
 
                 <tr>
-                    <td colspan="2" class="pt-4">
+                    <td colspan="3" class="pt-4">
                         <span style="font-weight: bold"> Stored Moves</span>
                     </td>
                 </tr>
@@ -34,6 +36,10 @@
                         <span v-if="move.score">
                             {{ formatScore(move.score) }}
                         </span>
+                    </td>
+                    <td class="text-center">
+                        <v-btn icon="mdi-delete" variant="text" size="small"
+                            @click.stop="$emit('deleteMove', move.uci)"></v-btn>
                     </td>
                 </tr>
 
@@ -69,10 +75,9 @@ export default {
         }
     },
     emits: {
-        'click-move': (uciMove) => {
-            return typeof uciMove == 'string' && [4, 5].includes(uciMove.length)
-        },
+        'click-move': uciMove => !!uciMove,
         'click-prev': null,
+        'delete-move': uciMove => !!uciMove,
     },
     data: () => ({
         selectedMoveIndex: null,
@@ -151,7 +156,7 @@ export default {
     border-radius: 4px;
     background-color: rgb(240, 240, 240);
     position: relative;
-    min-width: 200px;
+    min-width: 260px;
 }
 
 .moves-table__header {

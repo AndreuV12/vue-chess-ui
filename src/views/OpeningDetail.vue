@@ -2,7 +2,6 @@
     <h1 class="mb-2">Opening Detail</h1>
 
     <div class="d-flex mb-6  align-center justify-space-between">
-        <!-- Aquí iran mas botones -->
         <span class="openingTitle mb-2">{{ opening.name }}</span>
         <div>
             <v-btn variant="text" icon="mdi-image-move"></v-btn>
@@ -18,8 +17,8 @@
             </InteractiveBoard>
         </v-col>
         <v-col cols="auto" style="min-width: fit-content;">
-            <MovesTable :moves="sortedStoredMoves" :bestMoves="sortedBestMoves" @clickMove="handleUciMove"
-                @clickPrev="goPrevMove" @clickNext="goNextMove" :height="'75vh'">
+            <MovesTable :moves="sortedStoredMoves" :bestMoves="sortedBestMoves" @clickMove="handleMove"
+                @deleteMove="handleDeleteMove" @clickPrev="goPrevMove" @clickNext="goNextMove" :height="'75vh'">
             </MovesTable>
         </v-col>
     </v-row>
@@ -88,14 +87,17 @@ export default {
 
     },
     methods: {
-        // From Board
-        async handleMove([from, to]) {
-            const uciMove = ChessEngine.getUciMove(from, to)
+        async handleMove(uciMove) {
             if (!Object.keys(this.moves).includes(uciMove)) {
+                const [from, to] = ChessEngine.getCoordinadesMove(uciMove)
                 const fen = ChessEngine.doMove(this.fen, from, to)
                 this.addMoveToOpening(uciMove, this.opening, this.path, fen) // No dot await until response
             }
             this.path.push(uciMove)
+        },
+
+        async handleDeleteMove(uciMove) {
+            this.deleteMoveFromOpening(uciMove, this.opening, this.path)
         },
 
         async addMoveToOpening(uciMove, opening, path, fen) { // Updates opening syncronously (computing locally) so it is not necessary to await for response
@@ -119,12 +121,20 @@ export default {
                 this.opening = updatedOpening
             }
         },
-        // From Table
-        async handleUciMove(uciMove) {
-            const [from, to] = ChessEngine.getCoordinadesMove(uciMove)
-            this.handleMove([from, to])
+
+        async deleteMoveFromOpening(uciMove, opening, path) {
+            const openingCopy = JSON.parse(JSON.stringify(opening))
+            let data = openingCopy.data
+            for (const move of path) {
+                data = data.moves[move]
+            }
+            const moveToDelete = data.moves[uciMove]
+            delete (data.moves[uciMove])
+            this.opening = openingCopy
+            await api.deleteMoveFromOpening(opening.id, moveToDelete, path)
         },
 
+        // From Table
         goPrevMove() {
             this.path.pop()
         },
