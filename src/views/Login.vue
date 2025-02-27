@@ -54,17 +54,11 @@ export default {
                 this.$router.push({ name: 'Home' })
             }
             catch (error) {
-                if (error.response && error.response.status === 401) {
-                    // Mostrar mensaje de error para usuario no encontrado o contraseña incorrecta
-                    if (error.response.data.detail === 'Usuario no encontrado') {
-                        this.errorMessage = 'Usuario no encontrado';
-                    }
-                    else if (error.response.data.detail === 'Contraseña incorrecta') {
-                        this.errorMessage = 'Contraseña incorrecta';
-                    }
+                if (error.response?.data?.detail) {
+                    this.errorMessage = error.response.data.detail
                 }
                 else {
-                    console.error(error)
+                    this.errorMessage = 'Error al iniciar session';
                 }
             }
         },
